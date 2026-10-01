@@ -1,0 +1,30 @@
+From: Magus Verma <magus-verma@users.noreply.github.com>
+Subject: [PATCH] Add HP OmniBook 5 firmware extraction mapping
+
+The Snapdragon X Plus HP OmniBook 5 uses the device-tree model
+"HP OmniBook 5" and stores its GPU, ADSP and CDSP firmware under the
+x1p42100 HP device directory.
+
+Add the model mapping so qcom-firmware-extract can build the firmware
+package from the laptop's Windows DriverStore.
+
+---
+ qcom-firmware-extract | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/qcom-firmware-extract b/qcom-firmware-extract
+index e22d658..0000000 100755
+--- a/qcom-firmware-extract
++++ b/qcom-firmware-extract
+@@ -43,6 +43,9 @@ case "$device_model" in
+ 	"HP EliteBook Ultra G1q")
+ 		device_path="x1e80100/hp/elitebook-ultra-g1q"
+ 		;;
++	"HP OmniBook 5")
++		device_path="x1p42100/hp/omnibook-5"
++		;;
+ 	"HP Omnibook X 14")
+ 		device_path="x1e80100/hp/omnibook-x14"
+ 		;;
+-- 
+2.51.0
