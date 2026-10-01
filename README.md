@@ -1,5 +1,7 @@
 # HP OmniBook 5 Ubuntu Toolkit
 
+[![Toolkit checks](https://github.com/magus-verma/hp-omnibook5-ubuntu-toolkit/actions/workflows/tests.yml/badge.svg)](https://github.com/magus-verma/hp-omnibook5-ubuntu-toolkit/actions/workflows/tests.yml)
+
 A guided firmware repair and installation companion for the **Snapdragon X Plus HP OmniBook 5**. Built from a successfully recovered and reboot-tested Ubuntu setup, with an emphasis on keeping a working boot path.
 
 **Initial release: tested on HP OmniBook 5 Laptop 16-bf0xxx, Ubuntu 26.04 ARM64, kernel `7.2.2-jg-0-qcom-x1e`, and the explicit OmniBook 5 DTB.** Hardware changes are deliberately blocked on other models, kernels, operating systems and boot layouts (encrypted/LVM roots, separate `/boot` and Btrfs are not validated). The 14-he variant is a future validation target; Intel/AMD OmniBooks and the OmniBook X are outside this release.
@@ -99,5 +101,7 @@ Tests exercise unsupported hardware rejection, no-write dry runs, firmware versi
 ## Credits and licensing
 
 The underlying kernel/DTB and board work comes from [Jens Glathe and the OmniBook 5 discussion contributors](https://github.com/jglathe/linux_ms_dev_kit/discussions/56), alongside Ubuntu, Linux, Mesa and ALSA contributors. This toolkit packages the steps observed on one laptop; it does not claim authorship of those drivers or firmware.
+
+Our [hardware report](https://github.com/jglathe/linux_ms_dev_kit/discussions/56#discussioncomment-18689467) and [focused ALSA report](https://github.com/alsa-project/alsa-ucm-conf/pull/860#issuecomment-5922679327) have been contributed upstream.
 
 Toolkit code is MIT licensed. Proprietary Windows firmware, complete driver packages, kernel packages, disk images, personal logs and credentials are **not** included. Firmware remains subject to its original license; obtaining it from your local installation does not grant redistribution rights. See [the command reference](docs/commands.md) for source links and the board checksum.

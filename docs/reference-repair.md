@@ -31,6 +31,8 @@ The selected local Windows GPU driver reported `DriverVer=02/28/2026,31.0.148.0`
 
 This is reference evidence, not a universal firmware pin. The toolkit chooses complete local driver sets by INF version and records their hashes. No Windows binaries are included in the repository.
 
+Relevant installed package versions were `alsa-ucm-conf 1.2.15.3-1ubuntu1.5`, `alsa-utils 1.2.15.2-1ubuntu1`, `protection-domain-mapper 1.0-4ubuntu6`, and `linux-firmware-qualcomm-misc 20260319.git217ca6e4-0ubuntu2.1`.
+
 ## Changes not made
 
 The repair did not flash BIOS/EC, repartition storage, write the Windows filesystem or replace the recovered kernel. An old force-start remoteproc service was disabled. Generic kernel installation and rebuilding every boot image were avoided after reviewing the previous boot failure.
@@ -42,3 +44,7 @@ Raw logs, full driver-store archives, disk/EFI backups, private recovery-chat co
 The reusable toolkit passed 26 automated safety tests, Python compilation, live read-only hardware diagnosis and a no-write install plan on the reference laptop. A second complete installation using this new installer has not been performed. Firmware extraction/initrd building/reboot were validated during the underlying repair, using the earlier one-machine scripts.
 
 Native Fn mode, keyboard lighting and satisfactory loudness remain open. Camera capture, Bluetooth pairing, microphone/headphones, external display and sleep/resume still need physical tests. See [hardware-status.md](hardware-status.md).
+
+## Upstream contributions
+
+The findings were posted to the [OmniBook 5 hardware discussion](https://github.com/jglathe/linux_ms_dev_kit/discussions/56#discussioncomment-18689467). A focused hardware/audio report was also posted to [ALSA UCM's OmniBook support pull request](https://github.com/alsa-project/alsa-ucm-conf/pull/860#issuecomment-5922679327). The latter explicitly distinguishes the local T14s-based profile from testing the exact upstream PR commit.
