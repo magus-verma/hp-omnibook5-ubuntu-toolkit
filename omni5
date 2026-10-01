@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+"""A guided, recoverable toolkit for the tested HP OmniBook 5 Ubuntu setup."""
+import argparse
+import json
+import os
+from pathlib import Path
+import sys
+
+from omni5lib import __version__
+from omni5lib.core import RepairError, doctor
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--version', action='version', version=__version__)
+    sub = p.add_subparsers(dest='command', required=True)
+    for name in ['doctor', 'verify']:
+        c = sub.add_parser(name, help='Read-only checks; run from the desktop without sudo.')
+        c.add_argument('--json', action='store_true')
+    c = sub.add_parser('install', help='Stage firmware and a separate boot image; keep the existing default.')
+    source = c.add_mutually_exclusive_group()
+    source.add_argument('--windows-root', type=Path)
+    source.add_argument('--windows-device', type=Path)
+    c.add_argument('--board-file', type=Path, help='Use a local, checksum-verified board-2.bin instead of downloading it.')
+    c.add_argument('--dry-run', action='store_true', help='Show the change plan; no downloads, mounts or system writes.')
+    c = sub.add_parser('finalize', help='Make the successfully tested boot image the default.')
+    c.add_argument('--confirm-working', action='store_true')
+    c = sub.add_parser('rollback', help='Restore files from a specific backup ID.')
+    c.add_argument('backup_id')
+    c = sub.add_parser('shortcuts', help='Add the documented GNOME keyboard workaround, without sudo.')
+    c.add_argument('--mode', choices=['super', 'direct'], default='super')
+    sub.add_parser('restore-shortcuts', help='Restore prior GNOME bindings.')
+    sub.add_parser('guide', help='Open the local installation guide path.')
+    sub.add_parser('setup', help='Guided firmware setup; run as your desktop user.')
+    a = p.parse_args()
+    try:
+        if a.command in ['doctor', 'verify']:
+            d = doctor()
+            if a.json: print(json.dumps(d, indent=2))
+            else:
+                print('HP OmniBook 5 toolkit '+__version__)
+                print('Model:', d['model']); print('Kernel:', d['kernel']); print('Supported:', d['supported'])
+                if not d['supported']: print(d['unsupported_reason'])
+                print('Sound:', d['audio_cards']); print('Graphics:', d['graphics'])
+                print('DSPs:', d['remote_processors']); print('Network:', d.get('network_devices', []))
+                print('Native Fn/backlight support is not provided by this toolkit.')
+            return 0 if d['supported'] else 2
+        if a.command == 'install':
+            from omni5lib.repair import stage
+            stage(a)
+        elif a.command == 'finalize':
+            from omni5lib.repair import finalize
+            finalize(a.confirm_working)
+        elif a.command == 'rollback':
+            from omni5lib.repair import rollback
+            rollback(a.backup_id)
+        elif a.command in ['shortcuts', 'restore-shortcuts']:
+            if os.geteuid() == 0: raise RepairError('Run desktop shortcut commands as your normal logged-in user, without sudo.')
+            from omni5lib.desktop import install_shortcuts, restore_shortcuts
+            (install_shortcuts(a.mode) if a.command == 'shortcuts' else restore_shortcuts())
+        elif a.command == 'guide':
+            print(Path(__file__).resolve().parent/'docs/install.md')
+        elif a.command == 'setup':
+            from omni5lib.wizard import setup
+            setup()
+        return 0
+    except (RepairError, OSError, ValueError, EOFError) as e:
+        print('Stopped safely: '+str(e), file=sys.stderr); return 1
+    except KeyboardInterrupt:
+        print('\nCancelled. If staging had begun, recorded changes were rolled back.', file=sys.stderr); return 130
+
+if __name__ == '__main__': sys.exit(main())

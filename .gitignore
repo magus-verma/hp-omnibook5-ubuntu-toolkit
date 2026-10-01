@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+reports/
+staging/
+*.mbn
+*.elf
+*.bin
+*.zst
+*.deb
+*.iso
+*.img
+*.key
+*.pem
+.env
